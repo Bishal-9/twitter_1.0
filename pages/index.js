@@ -1,27 +1,57 @@
+import { getProviders, getSession, useSession } from 'next-auth/react'
 import Head from 'next/head'
+import Feed from '../components/Feed'
+import Login from '../components/Login'
 import Sidebar from '../components/Sidebar'
 
-export default function Home() {
-  return (
-    <div>
-      <Head>
-        <title>Twitter</title>
-        <meta name="description" content="Twitter App build with Next JS, Tailwind CSS, Recoil" />
-        <link rel="icon" href="https://cdn-icons-png.flaticon.com/512/124/124021.png" />
-      </Head>
-      
-      <main className='bg-black min-h-screen flex max-w-[1500px] mx-auto'>
+export default function Home({ trendingResults, followResults, providers }) {
 
-        {/* Sidebar */}
-        <Sidebar />
+    const { data: session } = useSession()
 
-        {/* Feed */}
+    if (!session) return <Login providers={providers} />
 
-        {/* Widgets */}
+    return (
+        <div>
+            <Head>
+                <title>Twitter</title>
+                <meta name="description" content="Twitter App build with Next JS, Tailwind CSS, Recoil" />
+                <link rel="icon" href="https://cdn-icons-png.flaticon.com/512/124/124021.png" />
+            </Head>
+
+            <main className='bg-black min-h-screen flex max-w-[1500px] mx-auto'>
+
+                {/* Sidebar */}
+                <Sidebar />
+
+                {/* Feed */}
+                <Feed />
+
+                {/* Widgets */}
 
 
-        {/* Modal */}
-      </main>
-    </div>
-  )
+                {/* Modal */}
+            </main>
+        </div>
+    )
+}
+
+export async function getServerSideProps(context) {
+    
+    const trendingResults = await fetch('https://jsonkeeper.com/b/NKEV')
+        .then(res => res.json())
+    
+    const followResults = await fetch('https://jsonkeeper.com/b/WWMJ')
+        .then(res => res.json())
+    
+    const providers = await getProviders()
+    const session = await getSession(context)
+
+    return {
+        props: {
+            trendingResults,
+            followResults,
+            providers,
+            session
+        }
+    }
 }
