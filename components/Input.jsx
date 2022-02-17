@@ -5,9 +5,11 @@ import { Picker } from 'emoji-mart'
 import { addDoc, collection, doc, serverTimestamp, updateDoc } from "firebase/firestore"
 import { db, storage } from "../firebase"
 import { getDownloadURL, ref, uploadString } from "firebase/storage"
+import { useSession } from "next-auth/react"
 
 const Input = () => {
 
+    const { data: session } = useSession()
     const filePickerRef = useRef(null)
     const [input, setInput] = useState('')
     const [selectedFile, setSelectedFile] = useState(null)
@@ -39,10 +41,10 @@ const Input = () => {
         const docRef = await addDoc(
             collection(db, 'posts'),
             {
-                // id: ,
-                // username: ,
-                // userImg: ,
-                // tag: ,
+                id: session.user.uid,
+                username: session.user.name,
+                userImg: session.user.image,
+                tag: session.user.tag,
                 text: input,
                 timestamp: serverTimestamp(),
             }
@@ -68,7 +70,7 @@ const Input = () => {
         <div className={`border-b border-gray-700 p-3 flex space-x-3 overflow-y-scroll ${loading && 'opacity-60'}`}>
             <img
                 className="h-11 w-11 rounded-full cursor-pointer"
-                src="https://avatars.githubusercontent.com/u/63504511?v=4"
+                src={session.user.image}
                 alt="profile"
             />
 
