@@ -45,7 +45,7 @@ const PostPage = ({ trendingResults, followResults, providers }) => {
     return (
         <div>
             <Head>
-                <title>{post?.username} on Twitter: "{post?.text}"</title>
+                <title>{post?.username} on Twitter: &quot;{post?.text}&quot;</title>
                 <meta name="description" content="Twitter App build with Next JS, Tailwind CSS, Recoil" />
                 <link rel="icon" href="https://cdn-icons-png.flaticon.com/512/124/124021.png" />
             </Head>
